@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('factura_articulo', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('factura_id')->constrained()->onDelete('cascade');
+        Schema::create('articulo_factura', function (Blueprint $table) {
             $table->foreignId('articulo_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+            $table->foreignId('factura_id')->constrained();
+            $table->primary(['factura_id', 'articulo_id']);
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('factura_articulo');
+        Schema::dropIfExists('articulo_factura');
     }
 };

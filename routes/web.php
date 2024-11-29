@@ -22,5 +22,10 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('articulos', ArticuloController::class);
 Route::resource('facturas', FacturaController::class);
+// Ruta GET para mostrar el formulario de añadir artículos
+Route::get('/factura/{factura}/agregar-articulo', [FacturaController::class, 'anadirArticulos'])->name('facturas.anadirArticulos');
+
+// Ruta POST para procesar el formulario y añadir el artículo
+Route::post('/factura/{factura}/agregar-articulo', [FacturaController::class, 'anadirArticulo'])->name('facturas.anadirArticulo');
 
 require __DIR__.'/auth.php';

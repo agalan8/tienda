@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use App\Models\Factura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class FacturaController extends Controller
     public function index()
     {
         return view('facturas.index', [
-            'facturas' => Factura::all(),
+            'facturas' => Factura::with('articulos')->get(),
         ]);
     }
 
@@ -37,7 +38,34 @@ class FacturaController extends Controller
         $validated['user_id'] = Auth::id();
         $factura = Factura::create($validated);
         session()->flash('exito', 'Factura creada correctamente.');
-        return redirect()->route('facturas.show', $factura);
+        $articulos = Articulo::all();
+        return view('facturas.anadirArticulos', [
+            'factura' => $factura,
+            'articulos' => $articulos,
+        ]);
+
+    }
+
+    public function anadirArticulos(Factura $factura)
+    {
+        return view('facturas.anadirArticulos', [
+             'factura'=> $factura,
+             'articulos' =>Articulo::all(),
+         ]);
+    }
+
+    public function anadirArticulo(Request $request, Factura $factura){
+
+        // Validar que el artículo esté seleccionado
+        $request->validate([
+            'articulo_id' => 'required|exists:articulos,id',
+        ]);
+
+        // Añadir la relación en la tabla pivote
+        $factura->articulos()->attach($request->articulo_id);
+
+        return redirect()->route('facturas.anadirArticulos', ['factura' => $factura->id]);
+
     }
 
     /**

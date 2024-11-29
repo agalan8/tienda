@@ -17,6 +17,6 @@ class Factura extends Model
 
     public function articulos()
     {
-        return $this->belongsToMany(Articulo::class, 'factura_articulo');
+        return $this->belongsToMany(Articulo::class);
     }
 }
