@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Factura;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FacturaController extends Controller
 {
@@ -22,7 +23,7 @@ class FacturaController extends Controller
      */
     public function create()
     {
-        //
+        return view('facturas.create');
     }
 
     /**
@@ -30,7 +31,13 @@ class FacturaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'numero' => 'required|unique:facturas,numero',
+        ]);
+        $validated['user_id'] = Auth::id();
+        $factura = Factura::create($validated);
+        session()->flash('exito', 'Factura creada correctamente.');
+        return redirect()->route('facturas.show', $factura);
     }
 
     /**
@@ -38,7 +45,10 @@ class FacturaController extends Controller
      */
     public function show(Factura $factura)
     {
-        //
+        return view('facturas.show', [
+            'factura' => $factura,
+            'articulos' => $factura->articulos,
+        ]);
     }
 
     /**
@@ -46,7 +56,9 @@ class FacturaController extends Controller
      */
     public function edit(Factura $factura)
     {
-        //
+        // return view('facturas.edit', [
+        //     'factura'=> $factura
+        // ]);
     }
 
     /**
@@ -54,7 +66,7 @@ class FacturaController extends Controller
      */
     public function update(Request $request, Factura $factura)
     {
-        //
+
     }
 
     /**
@@ -62,6 +74,7 @@ class FacturaController extends Controller
      */
     public function destroy(Factura $factura)
     {
-        //
+        $factura->delete();
+        return redirect()->route('facturas.index');
     }
 }

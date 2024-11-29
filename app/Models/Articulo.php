@@ -11,4 +11,9 @@ class Articulo extends Model{
 
     /** @use HasFactory<\Database\Factories\ArticuloFactory> */
     use HasFactory;
+
+    public function facturas()
+    {
+        return $this->belongsToMany(Factura::class, 'factura_articulo');
+    }
 }
