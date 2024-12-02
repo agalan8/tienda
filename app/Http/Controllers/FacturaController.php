@@ -35,13 +35,16 @@ class FacturaController extends Controller
         $validated = $request->validate([
             'numero' => 'required|unique:facturas,numero',
         ]);
+
         $validated['user_id'] = Auth::id();
+
         $factura = Factura::create($validated);
         session()->flash('exito', 'Factura creada correctamente.');
         $articulos = Articulo::all();
         return view('facturas.anadirArticulos', [
             'factura' => $factura,
             'articulos' => $articulos,
+            'articulos_factura' => $factura->articulos,
         ]);
 
     }
@@ -49,8 +52,9 @@ class FacturaController extends Controller
     public function anadirArticulos(Factura $factura)
     {
         return view('facturas.anadirArticulos', [
-             'factura'=> $factura,
-             'articulos' =>Articulo::all(),
+            'factura'=> $factura,
+            'articulos' =>Articulo::all(),
+            'articulos_factura' => $factura->articulos,
          ]);
     }
 
